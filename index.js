@@ -1,5 +1,6 @@
 const core = require("@actions/core");
 const github = require("@actions/github");
+const sloc = require("node-sloc");
 const { exec } = require("child_process");
 
 const formatter = `module.exports = function(results){
@@ -24,18 +25,35 @@ try {
   }
   exec(`echo '${formatter}' > formatter.cjs`);
 
-  const files = JSON.parse(core.getInput("files")).join(" ");
+  const path = JSON.parse(core.getInput("path"));
+  const ignore = JSON.parse(core.getInput("ignore"));
 
-  exec(
-    `npm_config_yes=true npx eslint ${files} -f ./formatter.cjs`,
-    (_, out) => {
-      console.log(out);
-      const o = JSON.parse(out);
-      core.setOutput("warnings", o.warnings);
-      core.setOutput("errors", o.errors);
-      core.setOutput("problems", o.warnings + o.errors);
-    }
-  );
+  const loc = sloc
+    .sloc({
+      path,
+      ignorePaths: ignore,
+      extensions: ["js", "ts"],
+      ignoreDefault: true,
+    })
+    .then((locres) => {
+      const tloc = locres.loc;
+      exec(
+        `npm_config_yes=true npx eslint ${path} --ignore-pattern ${ignore} -f ./formatter.cjs`,
+        (_, out) => {
+          const o = JSON.parse(out);
+
+          const score = Math.max(
+            0,
+            10.0 - ((5 * o.errors + o.warnings) / tloc) * 10
+          );
+
+          core.setOutput("warnings", o.warnings);
+          core.setOutput("errors", o.errors);
+          core.setOutput("problems", o.warnings + o.errors);
+          core.setOutput("score", score);
+        }
+      );
+    });
 } catch (error) {
   core.setFailed(error.message);
 }
