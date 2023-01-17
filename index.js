@@ -25,7 +25,7 @@ try {
   }
   exec(`echo '${formatter}' > formatter.cjs`);
 
-  const path = JSON.parse(core.getInput("path"));
+  const path = core.getInput("path");
   const ignore = JSON.parse(core.getInput("ignore"));
 
   const loc = sloc
