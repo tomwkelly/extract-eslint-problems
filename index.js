@@ -42,7 +42,7 @@ try {
         const score = Math.max(
           0,
           10.0 - ((5 * o.errors + o.warnings) / tloc) * 10
-        );
+        ).toFixed(1);
 
         core.setOutput("warnings", o.warnings);
         core.setOutput("errors", o.errors);
