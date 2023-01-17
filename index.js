@@ -29,6 +29,7 @@ try {
   exec(
     `npm_config_yes=true npx eslint ${files} -f ./formatter.cjs`,
     (_, out) => {
+      console.log(out);
       const o = JSON.parse(out);
       core.setOutput("warnings", o.warnings);
       core.setOutput("errors", o.errors);
