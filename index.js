@@ -6,7 +6,7 @@ const formatter = `module.exports = function(results){
   const r = results.reduce((acc, cur) => {
     return [ acc[0] + cur.warningCount, acc[1] + cur.errorCount ]
   }, [0,0]);
-  return {"warnings": r[0], "errors": r[1]};
+  return JSON.stringify({warnings: r[0], errors: r[1]});
 }`;
 
 try {
