@@ -22,18 +22,20 @@ try {
   } else {
     exec("npm install");
   }
-  exec("npm i -g eslint");
   exec(`echo '${formatter}' > formatter.cjs`);
 
   const files = JSON.parse(core.getInput("files")).join(" ");
 
-  exec(`eslint ${files} -f ./formatter.cjs`, (e, out) => {
-    if (e) throw e;
-    const o = JSON.parse(out);
-    core.setOutput("warnings", o.warnings);
-    core.setOutput("errors", o.errors);
-    core.setOutput("problems", o.warnings + o.errors);
-  });
+  exec(
+    `npm_config_yes=true npx eslint ${files} -f ./formatter.cjs`,
+    (e, out) => {
+      if (e) throw e;
+      const o = JSON.parse(out);
+      core.setOutput("warnings", o.warnings);
+      core.setOutput("errors", o.errors);
+      core.setOutput("problems", o.warnings + o.errors);
+    }
+  );
 } catch (error) {
   core.setFailed(error.message);
 }
