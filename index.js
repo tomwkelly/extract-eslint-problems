@@ -20,13 +20,12 @@ try {
     exec(
       `npm install --save-dev eslint-config-${standard} eslint-plugin-promise eslint-plugin-import eslint-plugin-n`
     );
-  } else {
-    exec("npm install");
   }
+
   exec(`echo '${formatter}' > formatter.cjs`);
 
   const path = core.getInput("path");
-  const ignore = JSON.parse(core.getInput("ignore"));
+  const ignore = core.getInput("ignore");
 
   sloc({
     path,
