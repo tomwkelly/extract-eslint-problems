@@ -28,32 +28,30 @@ try {
   const path = core.getInput("path");
   const ignore = JSON.parse(core.getInput("ignore"));
 
-  const loc = sloc
-    .sloc({
-      path,
-      ignorePaths: ignore,
-      extensions: ["js", "ts"],
-      ignoreDefault: true,
-    })
-    .then((locres) => {
-      const tloc = locres.loc;
-      exec(
-        `npm_config_yes=true npx eslint ${path} --ignore-pattern ${ignore} -f ./formatter.cjs`,
-        (_, out) => {
-          const o = JSON.parse(out);
+  sloc({
+    path,
+    ignorePaths: ignore,
+    extensions: ["js", "ts"],
+    ignoreDefault: true,
+  }).then((locres) => {
+    const tloc = locres.loc;
+    exec(
+      `npm_config_yes=true npx eslint ${path} --ignore-pattern ${ignore} -f ./formatter.cjs`,
+      (_, out) => {
+        const o = JSON.parse(out);
 
-          const score = Math.max(
-            0,
-            10.0 - ((5 * o.errors + o.warnings) / tloc) * 10
-          );
+        const score = Math.max(
+          0,
+          10.0 - ((5 * o.errors + o.warnings) / tloc) * 10
+        );
 
-          core.setOutput("warnings", o.warnings);
-          core.setOutput("errors", o.errors);
-          core.setOutput("problems", o.warnings + o.errors);
-          core.setOutput("score", score);
-        }
-      );
-    });
+        core.setOutput("warnings", o.warnings);
+        core.setOutput("errors", o.errors);
+        core.setOutput("problems", o.warnings + o.errors);
+        core.setOutput("score", score);
+      }
+    );
+  });
 } catch (error) {
   core.setFailed(error.message);
 }
