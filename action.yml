@@ -1,0 +1,25 @@
+name: "Extract ESLint Problems"
+description: "Extract the number of warnings and errors from eslint"
+inputs:
+  create-default: # id of input
+    description: "Create a default eslint config"
+    required: false
+    default: false
+  use-semicolons:
+    description: "When using create-default, whether to use semicolons or not"
+    required: false
+    default: true
+  files:
+    description: "Files to scan with eslint, defaults to ./"
+    required: false
+    default: "['./']"
+outputs:
+  warnings:
+    description: "Number of warnings from scan"
+  errors:
+    description: "Number of errors from scan"
+  problems:
+    description: "Total number of problems from scan"
+runs:
+  using: "node16"
+  main: "dist/index.js"
