@@ -26,6 +26,8 @@ outputs:
     description: 'Total number of problems from scan'
   score:
     description: 'Code score'
+  loc:
+    description: 'Lines of code scanned'
 runs:
   using: 'node16'
   main: 'index.js'

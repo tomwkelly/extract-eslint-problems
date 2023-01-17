@@ -48,6 +48,7 @@ try {
         core.setOutput("errors", o.errors);
         core.setOutput("problems", o.warnings + o.errors);
         core.setOutput("score", score);
+        core.setOutput("loc", tloc);
       }
     );
   });
